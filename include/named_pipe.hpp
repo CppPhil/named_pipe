@@ -1,5 +1,7 @@
 #ifndef INCG_NP_NAMED_PIPE_HPP
 #define INCG_NP_NAMED_PIPE_HPP
+#include <stdexcept>
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif

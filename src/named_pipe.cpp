@@ -62,7 +62,8 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
     m_pipe = createNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      // TODO: Handle error.
+      // TODO: Add routines to convert utf8ToUtf16 and vice versa.
+      // throw std::runtime_error{"Could not create pipe with name: " + m_name};
     }
     break;
   }
@@ -70,13 +71,16 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
     m_pipe = openNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      // TODO: HANDLE ERROR
+      // TODO:
+      // throw std::runtime_error{"Could not open pipe with name: " + m_name};
     }
 
     if (!ConnectNamedPipe(
           /* hNamedPipe */ m_pipe, /* lpOverlapped */ nullptr)) {
-      // TODO: HANDLE ERROR
-      // Deallocate the named pipe.
+      CloseHandle(/* hObject */ m_pipe);
+      // TODO:
+      // throw std::runtime_error{"Could not connect to pipe with name: " +
+      // m_name};
     }
 
     break;
@@ -87,7 +91,13 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
 
 NamedPipe::~NamedPipe()
 {
-  // TODO: HERE
+#ifdef _WIN32
+  if (m_pipe != INVALID_HANDLE_VALUE) {
+    if (!CloseHandle(/* hObject */ m_pipe)) {
+      NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
+    }
+  }
+#endif
 }
 
 const String& NamedPipe::name() const noexcept
