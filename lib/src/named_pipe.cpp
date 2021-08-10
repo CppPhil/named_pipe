@@ -67,6 +67,13 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
       throw std::runtime_error{
         "Could not create pipe with name: " + utf16ToUtf8(m_name)};
     }
+
+    if (!ConnectNamedPipe(m_pipe, nullptr)) {
+      throw std::runtime_error{
+        "Server: ConnectNamedPipe failed: "
+        + utf16ToUtf8(formatWindowsError(GetLastError()))};
+    }
+
     break;
   }
   case Mode::Connect: {
