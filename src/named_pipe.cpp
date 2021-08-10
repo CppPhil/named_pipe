@@ -1,5 +1,6 @@
 #include <utility>
 
+#include "code_conv.hpp"
 #include "named_pipe.hpp"
 
 namespace np {
@@ -62,8 +63,8 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
     m_pipe = createNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      // TODO: Add routines to convert utf8ToUtf16 and vice versa.
-      // throw std::runtime_error{"Could not create pipe with name: " + m_name};
+      throw std::runtime_error{
+        "Could not create pipe with name: " + utf16ToUtf8(m_name)};
     }
     break;
   }
@@ -71,16 +72,15 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
     m_pipe = openNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      // TODO:
-      // throw std::runtime_error{"Could not open pipe with name: " + m_name};
+      throw std::runtime_error{
+        "Could not open pipe with name: " + utf16ToUtf8(m_name)};
     }
 
     if (!ConnectNamedPipe(
           /* hNamedPipe */ m_pipe, /* lpOverlapped */ nullptr)) {
       CloseHandle(/* hObject */ m_pipe);
-      // TODO:
-      // throw std::runtime_error{"Could not connect to pipe with name: " +
-      // m_name};
+      throw std::runtime_error{
+        "Could not connect to pipe with name: " + utf16ToUtf8(m_name)};
     }
 
     break;
