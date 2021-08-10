@@ -5,7 +5,7 @@
 namespace np {
 class [[nodiscard]] Status {
 public:
-  enum StatusEnum { Ok };
+  enum StatusEnum { Ok, WriteFailure, ReadFailure };
 
   static Status ok();
 

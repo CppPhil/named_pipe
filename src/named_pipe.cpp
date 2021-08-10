@@ -102,11 +102,55 @@ NamedPipe::Mode NamedPipe::mode() const noexcept
 
 Status NamedPipe::write(const void* data, std::size_t byteCount)
 {
-  // TODO: HERE
+#ifdef _WIN32
+  DWORD numberOfBytesWritten{};
+
+  if (!WriteFile(
+        /* hFile */ m_pipe,
+        /* lpBuffer */ data,
+        /* nNumberOfBytesToWrite */ byteCount,
+        /* lpNumberOfBytesWritten */ &numberOfBytesWritten,
+        /* lpOverlapped */ nullptr)) {
+    return Status{
+      Status::WriteFailure,
+      NP_TEXT("") /* TODO: get error message from windows */};
+  }
+
+  if (numberOfBytesWritten != byteCount) {
+    return Status{
+      Status::WriteFailure,
+      NP_TEXT("Number of bytes written was not equal to the number of bytes it "
+              "should've written.")};
+  }
+
+  return Status::ok();
+#endif
 }
 
 Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
 {
-  // TODO: HERE
+#ifdef _WIN32
+  DWORD numberOfBytesRead{};
+
+  if (!ReadFile(
+        /* hFile */ m_pipe,
+        /* lpBuffer */ buffer,
+        /* nNumberOfBytesToRead */ bytesToRead,
+        /* lpNumberOfBytesRead */ &numberOfBytesRead,
+        /* lpOverlapped */ nullptr)) {
+    return Status{
+      Status::ReadFailure,
+      NP_TEXT("") /* TODO: get error message from windows */};
+  }
+
+  if (numberOfBytesRead != bytesToRead) {
+    return Status{
+      Status::ReadFailure,
+      NP_TEXT("Number of bytes actually read was not equal to the number of "
+              "bytes that should've been read.")};
+  }
+
+  return Status::ok();
+#endif
 }
 } // namespace np
