@@ -2,9 +2,9 @@
 
 #include <iostream>
 
+#include "code_conv.hpp"
 #include "named_pipe.hpp"
 #include "pipe_name.hpp"
-#include "code_conv.hpp"
 
 static void toUpper(std::string& str)
 {
@@ -17,7 +17,8 @@ int main()
 {
   try {
     np::NamedPipe namedPipe{np::pipeName, np::NamedPipe::Mode::Create};
-    NP_COUT << NP_TEXT("Server: Created pipe with name: ") << namedPipe.name() << NP_TEXT("\n");
+    NP_COUT << NP_TEXT("Server: Created pipe with name: ") << namedPipe.name()
+            << NP_TEXT("\n");
 
     std::string buffer(20, ' ');
 
@@ -27,18 +28,20 @@ int main()
       toUpper(buffer);
 
       std::cout << "Server: result is \"" << buffer << "\"\n";
-    } else {
-      NP_CERR << NP_TEXT("Server: reading failed. ") << status.message() << NP_TEXT("\n");
+    }
+    else {
+      NP_CERR << NP_TEXT("Server: reading failed. ") << status.message()
+              << NP_TEXT("\n");
 
       return EXIT_FAILURE;
     }
-
-  } catch (const std::runtime_error& ex) {
+  }
+  catch (const std::runtime_error& ex) {
 #if _WIN32
-  NP_CERR << NP_TEXT("Server caught runtime_error: ") <<
-             np::utf8ToUtf16(ex.what()) << NP_TEXT("\n");
+    NP_CERR << NP_TEXT("Server caught runtime_error: ")
+            << np::utf8ToUtf16(ex.what()) << NP_TEXT("\n");
 
-  return EXIT_FAILURE;
+    return EXIT_FAILURE;
 #endif
   }
 

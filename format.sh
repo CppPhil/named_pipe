@@ -26,8 +26,9 @@ format () {
 cd "$DIR"
 
 # Format the source files.
-format "$DIR/include"
-format "$DIR/src"
+format "$DIR/client"
+format "$DIR/lib"
+format "$DIR/server"
 
 cd "$PREV_DIR"
 
