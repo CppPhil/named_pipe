@@ -16,12 +16,11 @@ int main()
 
     NP_COUT << NP_TEXT("Client connected to pipe: ") << namedPipe.name()
             << NP_TEXT("\n");
-    NP_COUT << NP_TEXT("Enter 20 characters: ");
 
-    std::array<char, 20> buffer{};
+    std::array<char, 512> buffer{};
 
-    for (std::size_t i{0}; (i < buffer.size()) && std::cin.get(buffer[i]);
-         ++i) {
+    for (std::size_t i{0}; i < buffer.size(); ++i) {
+      buffer[i] = ('a' + i) % ('z' - 'a');
     }
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

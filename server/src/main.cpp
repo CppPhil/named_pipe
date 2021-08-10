@@ -20,7 +20,7 @@ int main()
     NP_COUT << NP_TEXT("Server: Created pipe with name: ") << namedPipe.name()
             << NP_TEXT("\n");
 
-    std::string buffer(20, ' ');
+    std::string buffer(512, ' ');
 
     const np::Status status{namedPipe.read(buffer.data(), buffer.size())};
 

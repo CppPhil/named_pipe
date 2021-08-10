@@ -18,11 +18,11 @@ void addPrefixToPipeName(String& name)
 {
   const HANDLE handle{CreateNamedPipeW(
     /* lpName */ name.data(),
-    /* dwOpenMode */ PIPE_ACCESS_INBOUND,
-    /* dwPipeMode */ PIPE_TYPE_BYTE | PIPE_WAIT,
+    /* dwOpenMode */ PIPE_ACCESS_DUPLEX,
+    /* dwPipeMode */ PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
     /* nMaxInstances */ PIPE_UNLIMITED_INSTANCES,
-    /* nOutBufferSize */ 100,
-    /* nInBufferSize */ 100,
+    /* nOutBufferSize */ 512,
+    /* nInBufferSize */ 512,
     /* nDefaultTimeOut */ 0,
     /* lpSecurityAttributes */ nullptr)};
 
@@ -33,8 +33,8 @@ void addPrefixToPipeName(String& name)
 {
   const HANDLE handle{CreateFileW(
     /* lpFileName */ name.data(),
-    /* dwDesiredAccess */ GENERIC_WRITE,
-    /* dwShareMode */ FILE_SHARE_READ,
+    /* dwDesiredAccess */ GENERIC_READ | GENERIC_WRITE,
+    /* dwShareMode */ 0,
     /* lpSecurityAttributes */ nullptr,
     /* dwCreationDisposition */ OPEN_EXISTING,
     /* dwFlagsAndAttributes */ FILE_ATTRIBUTE_NORMAL,
@@ -84,8 +84,8 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
         "Could not open pipe with name: " + utf16ToUtf8(m_name)};
     }
 
-    if (!ConnectNamedPipe(
-          /* hNamedPipe */ m_pipe, /* lpOverlapped */ nullptr)) {
+    if (!WaitNamedPipeW(
+          /* lpNamedPipeName */ m_name.data(), /* nTimeOut */ 20000)) {
       CloseHandle(/* hObject */ m_pipe);
       throw std::runtime_error{
         "Could not connect to pipe with name: " + utf16ToUtf8(m_name)};
