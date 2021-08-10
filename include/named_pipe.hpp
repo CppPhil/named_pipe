@@ -4,18 +4,13 @@
 #include <Windows.h>
 #endif
 
-#include "string_types.hpp"
 #include "status.hpp"
+#include "string_types.hpp"
 
-namespace np
-{
-class NamedPipe
-{
+namespace np {
+class NamedPipe {
 public:
-  enum class Mode {
-    Create,
-    Connect
-  };
+  enum class Mode { Create, Connect };
 
   NamedPipe(String name, Mode mode);
 
@@ -31,7 +26,7 @@ public:
 
 private:
   String m_name;
-  Mode m_mode;
+  Mode   m_mode;
 #ifdef _WIN32
   HANDLE m_pipe;
 #endif

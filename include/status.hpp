@@ -2,15 +2,10 @@
 #define INCG_NP_STATUS_HPP
 #include "string_types.hpp"
 
-namespace np
-{
-class [[nodiscard]] Status
-{
+namespace np {
+class [[nodiscard]] Status {
 public:
-  enum StatusEnum
-  {
-    Ok
-  };
+  enum StatusEnum { Ok };
 
   static Status ok();
 
@@ -26,7 +21,7 @@ public:
 
 private:
   StatusEnum m_enumerator;
-  String m_message;
+  String     m_message;
 };
 } // namespace np
 #endif // INCG_NP_STATUS_HPP

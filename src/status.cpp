@@ -2,8 +2,7 @@
 
 #include "status.hpp"
 
-namespace np
-{
+namespace np {
 Status Status::ok()
 {
   return Status{Status::Ok, NP_TEXT("The operation completed successfully.")};
