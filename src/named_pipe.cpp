@@ -1,6 +1,7 @@
 #include <utility>
 
 #include "code_conv.hpp"
+#include "format_windows_error.hpp"
 #include "named_pipe.hpp"
 
 namespace np {
@@ -121,9 +122,7 @@ Status NamedPipe::write(const void* data, std::size_t byteCount)
         /* nNumberOfBytesToWrite */ byteCount,
         /* lpNumberOfBytesWritten */ &numberOfBytesWritten,
         /* lpOverlapped */ nullptr)) {
-    return Status{
-      Status::WriteFailure,
-      NP_TEXT("") /* TODO: get error message from windows */};
+    return Status{Status::WriteFailure, formatWindowsError(GetLastError())};
   }
 
   if (numberOfBytesWritten != byteCount) {
@@ -148,9 +147,7 @@ Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
         /* nNumberOfBytesToRead */ bytesToRead,
         /* lpNumberOfBytesRead */ &numberOfBytesRead,
         /* lpOverlapped */ nullptr)) {
-    return Status{
-      Status::ReadFailure,
-      NP_TEXT("") /* TODO: get error message from windows */};
+    return Status{Status::ReadFailure, formatWindowsError(GetLastError())};
   }
 
   if (numberOfBytesRead != bytesToRead) {

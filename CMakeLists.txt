@@ -8,12 +8,14 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 set(APP_HEADERS
     include/code_conv.hpp
+    include/format_windows_error.hpp
     include/named_pipe.hpp
     include/status.hpp
     include/string_types.hpp)
 
 set(APP_SOURCES
     src/code_conv.cpp
+    src/format_windows_error.cpp
     src/main.cpp
     src/named_pipe.cpp
     src/status.cpp)
