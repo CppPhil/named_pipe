@@ -1,7 +1,3 @@
-Test it
-
-Remove magic numbers
-
 Make it run on GNU/Linux
 
 Add Visual Studio Project files

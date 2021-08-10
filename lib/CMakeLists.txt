@@ -1,5 +1,6 @@
 set(LIB_HEADERS
     include/code_conv.hpp
+    include/constants.hpp
     include/format_windows_error.hpp
     include/named_pipe.hpp
     include/pipe_name.hpp

@@ -1,6 +1,7 @@
 #include <utility>
 
 #include "code_conv.hpp"
+#include "constants.hpp"
 #include "format_windows_error.hpp"
 #include "named_pipe.hpp"
 
@@ -21,9 +22,9 @@ void addPrefixToPipeName(String& name)
     /* dwOpenMode */ PIPE_ACCESS_DUPLEX,
     /* dwPipeMode */ PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
     /* nMaxInstances */ PIPE_UNLIMITED_INSTANCES,
-    /* nOutBufferSize */ 512,
-    /* nInBufferSize */ 512,
-    /* nDefaultTimeOut */ 0,
+    /* nOutBufferSize */ bufferSize,
+    /* nInBufferSize */ bufferSize,
+    /* nDefaultTimeOut */ waitTimeMilliseconds,
     /* lpSecurityAttributes */ nullptr)};
 
   return handle;
@@ -78,7 +79,8 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
   }
   case Mode::Connect: {
     if (!WaitNamedPipeW(
-          /* lpNamedPipeName */ m_name.data(), /* nTimeOut */ 20000)) {
+          /* lpNamedPipeName */ m_name.data(),
+          /* nTimeOut */ waitTimeMilliseconds)) {
       CloseHandle(/* hObject */ m_pipe);
       throw std::runtime_error{
         "Client: (WaitNamedPipeW) waited too long for pipe "

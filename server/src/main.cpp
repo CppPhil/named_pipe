@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "code_conv.hpp"
+#include "constants.hpp"
 #include "named_pipe.hpp"
 #include "pipe_name.hpp"
 
@@ -20,7 +21,7 @@ int main()
     NP_COUT << NP_TEXT("Server: Created pipe with name: ") << namedPipe.name()
             << NP_TEXT("\n");
 
-    std::string buffer(512, ' ');
+    std::string buffer(np::bufferSize, ' ');
 
     const np::Status status{namedPipe.read(buffer.data(), buffer.size())};
 

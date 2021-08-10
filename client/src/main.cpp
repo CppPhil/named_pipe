@@ -5,6 +5,7 @@
 #include <string>
 
 #include "code_conv.hpp"
+#include "constants.hpp"
 #include "named_pipe.hpp"
 #include "pipe_name.hpp"
 #include "string_types.hpp"
@@ -17,8 +18,8 @@ int main()
     NP_COUT << NP_TEXT("Client connected to pipe: ") << namedPipe.name()
             << NP_TEXT("\n");
 
-    static const std::string alphabet{"abcdefghijklmnopqrstuvwxyz"};
-    std::array<char, 512>    buffer{};
+    static const std::string         alphabet{"abcdefghijklmnopqrstuvwxyz"};
+    std::array<char, np::bufferSize> buffer{};
 
     for (std::size_t i{0}; i < buffer.size(); ++i) {
       buffer[i] = alphabet[i % alphabet.size()];
