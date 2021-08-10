@@ -7,12 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
 set(APP_HEADERS
+    include/code_conv.hpp
     include/named_pipe.hpp
+    include/status.hpp
     include/string_types.hpp)
 
 set(APP_SOURCES
+    src/code_conv.cpp
     src/main.cpp
-    src/named_pipe.cpp)
+    src/named_pipe.cpp
+    src/status.cpp)
 
 set(APP_NAME named_pipe)
 
