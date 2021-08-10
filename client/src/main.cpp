@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 #include <array>
-#include <limits>
+#include <string>
 
 #include "code_conv.hpp"
 #include "named_pipe.hpp"
@@ -17,13 +17,12 @@ int main()
     NP_COUT << NP_TEXT("Client connected to pipe: ") << namedPipe.name()
             << NP_TEXT("\n");
 
-    std::array<char, 512> buffer{};
+    static const std::string alphabet{"abcdefghijklmnopqrstuvwxyz"};
+    std::array<char, 512>    buffer{};
 
     for (std::size_t i{0}; i < buffer.size(); ++i) {
-      buffer[i] = ('a' + i) % ('z' - 'a');
+      buffer[i] = alphabet[i % alphabet.size()];
     }
-
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     const np::Status status{namedPipe.write(buffer.data(), buffer.size())};
 

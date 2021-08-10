@@ -65,7 +65,7 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
       throw std::runtime_error{
-        "Could not create pipe with name: " + utf16ToUtf8(m_name)};
+        "Server: Could not create pipe with name: " + utf16ToUtf8(m_name)};
     }
 
     if (!ConnectNamedPipe(m_pipe, nullptr)) {
@@ -77,18 +77,20 @@ NamedPipe::NamedPipe(String name, Mode mode) : m_name
     break;
   }
   case Mode::Connect: {
-    m_pipe = openNamedPipe(m_name);
-
-    if (m_pipe == INVALID_HANDLE_VALUE) {
-      throw std::runtime_error{
-        "Could not open pipe with name: " + utf16ToUtf8(m_name)};
-    }
-
     if (!WaitNamedPipeW(
           /* lpNamedPipeName */ m_name.data(), /* nTimeOut */ 20000)) {
       CloseHandle(/* hObject */ m_pipe);
       throw std::runtime_error{
-        "Could not connect to pipe with name: " + utf16ToUtf8(m_name)};
+        "Client: (WaitNamedPipeW) waited too long for pipe "
+        + utf16ToUtf8(m_name)};
+    }
+
+    m_pipe = openNamedPipe(m_name);
+
+    if (m_pipe == INVALID_HANDLE_VALUE) {
+      throw std::runtime_error{
+        "Client: (openNamedPipe) Could not open pipe with name: "
+        + utf16ToUtf8(m_name)};
     }
 
     break;
