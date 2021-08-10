@@ -9,7 +9,7 @@ namespace {
 #ifdef _WIN32
 void addPrefixToPipeName(String& name)
 {
-  static const String prefix{TEXT("\\\\.\\pipe\\")};
+  static const String prefix{NP_TEXT("\\\\.\\pipe\\")};
 
   name = prefix + name;
 }

@@ -3,7 +3,7 @@ add_executable(
   src/main.cpp)
 
 target_link_libraries(
-  server
+  client
   PRIVATE
   named_pipe_lib)
 

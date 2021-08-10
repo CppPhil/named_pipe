@@ -33,4 +33,5 @@ private:
   HANDLE m_pipe;
 #endif
 };
+} // namespace np
 #endif // INCG_NP_NAMED_PIPE_HPP
