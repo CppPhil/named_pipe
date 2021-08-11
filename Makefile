@@ -18,7 +18,7 @@ CXXFLAGS         := -pedantic-errors -Wall -Wextra -Werror -std=c++17
 BUILD            := ./build
 LIB_DIR          := $(BUILD)/libs
 APP_DIR          := $(BUILD)/apps
-LDFLAGS          := -L$(LIB_DIR) -l$(LIB_DIR)/lib.a
+LDFLAGS          := -L$(LIB_DIR) -lnamedpipe
 LIB_INCLUDE      := -Ilib/include
 LIB_SRC          := $(wildcard lib/src/*.cpp)
 LIB_OBJ_DIR      := $(BUILD)/lib_objects
@@ -28,12 +28,13 @@ CLIENT_OBJ_DIR   := $(BUILD)/client_objects
 SERVER_INCLUDE   := -Iserver/include -Ilib/include
 SERVER_SRC       := $(wildcard server/src/*.cpp)
 SERVER_OBJ_DIR   := $(BUILD)/server_objects
+LIB_NAME         := $(LIB_DIR)/libnamedpipe.a
 
 LIB_OBJECTS    := $(LIB_SRC:%.cpp=$(LIB_OBJ_DIR)/%.o)
 CLIENT_OBJECTS := $(CLIENT_SRC:%.cpp=$(CLIENT_OBJ_DIR)/%.o)
 SERVER_OBJECTS := $(SERVER_SRC:%.cpp=$(SERVER_OBJ_DIR)/%.o)
 
-all: build $(LIB_DIR)/lib.a $(APP_DIR)/client $(APP_DIR)/server
+all: build $(LIB_NAME) $(APP_DIR)/client $(APP_DIR)/server
 
 $(LIB_OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
@@ -47,9 +48,9 @@ $(SERVER_OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	$(COMPILER) $(CXXFLAGS) $(SERVER_INCLUDE) -c $< -MMD -o $@
 
-$(LIB_DIR)/lib.a: $(LIB_OBJECTS)
+$(LIB_NAME): $(LIB_OBJECTS)
 	@mkdir -p $(@D)
-	ar rcs $(LIB_DIR)/lib.a $^
+	ar rcs $(LIB_NAME) $^
 
 $(APP_DIR)/client: $(CLIENT_OBJECTS)
 	@mkdir -p $(@D)
