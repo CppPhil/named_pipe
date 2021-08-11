@@ -16,6 +16,10 @@ public:
 
   NamedPipe(String name, Mode mode);
 
+  NamedPipe(const NamedPipe&) = delete;
+
+  NamedPipe& operator=(const NamedPipe&) = delete;
+
   ~NamedPipe();
 
   const String& name() const noexcept;
