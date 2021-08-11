@@ -19,7 +19,7 @@ void addPrefixToPipeName(String& name)
 {
   const HANDLE handle{CreateNamedPipeW(
     /* lpName */ name.data(),
-    /* dwOpenMode */ PIPE_ACCESS_DUPLEX,
+    /* dwOpenMode */ PIPE_ACCESS_INBOUND,
     /* dwPipeMode */ PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
     /* nMaxInstances */ PIPE_UNLIMITED_INSTANCES,
     /* nOutBufferSize */ bufferSize,
@@ -34,7 +34,7 @@ void addPrefixToPipeName(String& name)
 {
   const HANDLE handle{CreateFileW(
     /* lpFileName */ name.data(),
-    /* dwDesiredAccess */ GENERIC_READ | GENERIC_WRITE,
+    /* dwDesiredAccess */ GENERIC_WRITE,
     /* dwShareMode */ 0,
     /* lpSecurityAttributes */ nullptr,
     /* dwCreationDisposition */ OPEN_EXISTING,
