@@ -7,7 +7,7 @@
 
 #ifndef _WIN32
 #include <sys/types.h>
-#inculde <sys/stat.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #endif // ! _WIN32
@@ -210,9 +210,9 @@ Status NamedPipe::write(const void* data, std::size_t byteCount)
 
   return Status::ok();
 #else
-  const ssize_t bytesWritten{write(m_pipe, data, byteCount)};
+  const ssize_t bytesWritten{::write(m_pipe, data, byteCount)};
 
-  if (bytesWritten != byteCount) {
+  if (bytesWritten != static_cast<ssize_t>(byteCount)) {
     return Status{Status::WriteFailure, NP_TEXT("write failed!")};
   }
 
@@ -243,9 +243,9 @@ Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
 
   return Status::ok();
 #else
-  const ssize_t bytesRead{read(m_pipe, buffer, bytesToRead)};
+  const ssize_t bytesRead{::read(m_pipe, buffer, bytesToRead)};
 
-  if (bytesRead != bytesToRead) {
+  if (bytesRead != static_cast<ssize_t>(bytesToRead)) {
     return Status{Status::ReadFailure, NP_TEXT("read failed!")};
   }
 
