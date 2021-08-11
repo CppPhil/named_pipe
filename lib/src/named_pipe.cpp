@@ -6,9 +6,9 @@
 #include "named_pipe.hpp"
 
 #ifndef _WIN32
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif // ! _WIN32
 
@@ -22,8 +22,7 @@ void addPrefixToPipeName(String& name)
   name = prefix + name;
 }
 
-[[nodiscard]] HANDLE createNamedPipe(StringView name)
-{
+[[nodiscard]] HANDLE createNamedPipe(StringView name) {
   const HANDLE handle{CreateNamedPipeW(
     /* lpName */ name.data(),
     /* dwOpenMode */ PIPE_ACCESS_INBOUND,
@@ -37,7 +36,7 @@ void addPrefixToPipeName(String& name)
   return handle;
 }
 
-[[nodiscard]] HANDLE openNamedPipe(StringView name)
+  [[nodiscard]] HANDLE openNamedPipe(StringView name)
 {
   const HANDLE handle{CreateFileW(
     /* lpFileName */ name.data(),
@@ -51,33 +50,32 @@ void addPrefixToPipeName(String& name)
   return handle;
 }
 #else
-[[nodiscard]] int createNamedPipe(StringView pipeName)
-{
+[[nodiscard]] int createNamedPipe(StringView pipeName) {
   const int statusCode{mkfifo(pipeName.data(), 0666)};
 
   if (statusCode == -1) {
-    throw std::runtime_error{
-      "Could not create pipe named \"" + String{pipeName} + "\""};
+    throw std::runtime_error{"Could not create pipe named \"" + String{pipeName}
+                             + "\""};
   }
 
   const int fileDescriptor{open(pipeName.data(), O_RDONLY)};
 
   if (fileDescriptor == -1) {
     unlink(pipeName.data());
-    throw std::runtime_error{
-      "Could not open pipe named \"" + String{pipeName} + "\""};
+    throw std::runtime_error{"Could not open pipe named \"" + String{pipeName}
+                             + "\""};
   }
 
   return fileDescriptor;
 }
 
-[[nodiscard]] int openNamedPipe(StringView pipeName)
+  [[nodiscard]] int openNamedPipe(StringView pipeName)
 {
   const int fileDescriptor{open(pipeName.data(), O_WRONLY)};
 
   if (fileDescriptor == -1) {
-    throw std::runtime_error{
-      "Client: could not open pipe named \"" + String{pipeName} + "\"!"};
+    throw std::runtime_error{"Client: could not open pipe named \""
+                             + String{pipeName} + "\"!"};
   }
 
   return fileDescriptor;
@@ -87,6 +85,7 @@ void addPrefixToPipeName(String& name)
 
 NamedPipe::NamedPipe(String name, Mode mode)
   : m_name{std::move(name)}
+  , m_mode{mode}
   , m_pipe{
 #ifdef _WIN32
       INVALID_HANDLE_VALUE
@@ -103,8 +102,8 @@ NamedPipe::NamedPipe(String name, Mode mode)
     m_pipe = createNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      throw std::runtime_error{
-        "Server: Could not create pipe with name: " + utf16ToUtf8(m_name)};
+      throw std::runtime_error{"Server: Could not create pipe with name: "
+                               + utf16ToUtf8(m_name)};
     }
 
     if (!ConnectNamedPipe(m_pipe, nullptr)) {
@@ -166,16 +165,17 @@ NamedPipe::~NamedPipe()
       NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
 
       if (m_mode == Mode::Create) {
-      	unlink(m_name.c_str());
+        unlink(m_name.c_str());
       }
       return;
     }
 
-    if (m_mode == Mode::Create) {    statusCode = unlink(m_name.c_str());
+    if (m_mode == Mode::Create) {
+      statusCode = unlink(m_name.c_str());
 
-    if (statusCode == -1) {
-      NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
-    }
+      if (statusCode == -1) {
+        NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
+      }
     }
   }
 #endif

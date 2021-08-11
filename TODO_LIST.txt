@@ -1,4 +1,2 @@
-Make it run on GNU/Linux
-
 Add Visual Studio Project files
 

@@ -34,7 +34,7 @@ LIB_OBJECTS    := $(LIB_SRC:%.cpp=$(LIB_OBJ_DIR)/%.o)
 CLIENT_OBJECTS := $(CLIENT_SRC:%.cpp=$(CLIENT_OBJ_DIR)/%.o)
 SERVER_OBJECTS := $(SERVER_SRC:%.cpp=$(SERVER_OBJ_DIR)/%.o)
 
-all: build $(LIB_NAME) $(APP_DIR)/client $(APP_DIR)/server
+all: clean build $(LIB_NAME) $(APP_DIR)/client $(APP_DIR)/server
 
 $(LIB_OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)

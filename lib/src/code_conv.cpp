@@ -9,8 +9,7 @@
 namespace np {
 #ifdef _WIN32
 namespace {
-[[nodiscard]] std::size_t utf8ToUtf16RequiredChars(std::string_view utf8)
-{
+[[nodiscard]] std::size_t utf8ToUtf16RequiredChars(std::string_view utf8) {
   return MultiByteToWideChar(
     /* CodePage */ CP_UTF8,
     /* dwFlags */ 0,
@@ -20,7 +19,7 @@ namespace {
     /* cchWideChar */ 0);
 }
 
-[[nodiscard]] std::size_t utf16ToUtf8RequiredBytes(std::wstring_view utf16)
+  [[nodiscard]] std::size_t utf16ToUtf8RequiredBytes(std::wstring_view utf16)
 {
   return WideCharToMultiByte(
     /* CodePage */ CP_UTF8,
@@ -50,8 +49,8 @@ std::wstring utf8ToUtf16(std::string_view utf8)
     /* cchWideChar */ buffer.size())};
 
   if (statusCode == 0) {
-    throw std::runtime_error{
-      "Could not convert \"" + std::string{utf8} + "\" to UTF-16."};
+    throw std::runtime_error{"Could not convert \"" + std::string{utf8}
+                             + "\" to UTF-16."};
   }
 
   buffer.pop_back(); // Remove extraneous L'\0' character written by
