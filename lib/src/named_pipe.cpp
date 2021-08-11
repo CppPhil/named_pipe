@@ -22,7 +22,8 @@ void addPrefixToPipeName(String& name)
   name = prefix + name;
 }
 
-[[nodiscard]] HANDLE createNamedPipe(StringView name) {
+[[nodiscard]] HANDLE createNamedPipe(StringView name)
+{
   const HANDLE handle{CreateNamedPipeW(
     /* lpName */ name.data(),
     /* dwOpenMode */ PIPE_ACCESS_INBOUND,
@@ -36,7 +37,7 @@ void addPrefixToPipeName(String& name)
   return handle;
 }
 
-  [[nodiscard]] HANDLE openNamedPipe(StringView name)
+[[nodiscard]] HANDLE openNamedPipe(StringView name)
 {
   const HANDLE handle{CreateFileW(
     /* lpFileName */ name.data(),
@@ -50,32 +51,33 @@ void addPrefixToPipeName(String& name)
   return handle;
 }
 #else
-[[nodiscard]] int createNamedPipe(StringView pipeName) {
+[[nodiscard]] int createNamedPipe(StringView pipeName)
+{
   const int statusCode{mkfifo(pipeName.data(), 0666)};
 
   if (statusCode == -1) {
-    throw std::runtime_error{"Could not create pipe named \"" + String{pipeName}
-                             + "\""};
+    throw std::runtime_error{
+      "Could not create pipe named \"" + String{pipeName} + "\""};
   }
 
   const int fileDescriptor{open(pipeName.data(), O_RDONLY)};
 
   if (fileDescriptor == -1) {
     unlink(pipeName.data());
-    throw std::runtime_error{"Could not open pipe named \"" + String{pipeName}
-                             + "\""};
+    throw std::runtime_error{
+      "Could not open pipe named \"" + String{pipeName} + "\""};
   }
 
   return fileDescriptor;
 }
 
-  [[nodiscard]] int openNamedPipe(StringView pipeName)
+[[nodiscard]] int openNamedPipe(StringView pipeName)
 {
   const int fileDescriptor{open(pipeName.data(), O_WRONLY)};
 
   if (fileDescriptor == -1) {
-    throw std::runtime_error{"Client: could not open pipe named \""
-                             + String{pipeName} + "\"!"};
+    throw std::runtime_error{
+      "Client: could not open pipe named \"" + String{pipeName} + "\"!"};
   }
 
   return fileDescriptor;
@@ -102,8 +104,8 @@ NamedPipe::NamedPipe(String name, Mode mode)
     m_pipe = createNamedPipe(m_name);
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-      throw std::runtime_error{"Server: Could not create pipe with name: "
-                               + utf16ToUtf8(m_name)};
+      throw std::runtime_error{
+        "Server: Could not create pipe with name: " + utf16ToUtf8(m_name)};
     }
 
     if (!ConnectNamedPipe(m_pipe, nullptr)) {
@@ -199,7 +201,7 @@ Status NamedPipe::write(const void* data, std::size_t byteCount)
   if (!WriteFile(
         /* hFile */ m_pipe,
         /* lpBuffer */ data,
-        /* nNumberOfBytesToWrite */ byteCount,
+        /* nNumberOfBytesToWrite */ static_cast<DWORD>(byteCount),
         /* lpNumberOfBytesWritten */ &numberOfBytesWritten,
         /* lpOverlapped */ nullptr)) {
     return Status{Status::WriteFailure, formatWindowsError(GetLastError())};
@@ -232,7 +234,7 @@ Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
   if (!ReadFile(
         /* hFile */ m_pipe,
         /* lpBuffer */ buffer,
-        /* nNumberOfBytesToRead */ bytesToRead,
+        /* nNumberOfBytesToRead */ static_cast<DWORD>(bytesToRead),
         /* lpNumberOfBytesRead */ &numberOfBytesRead,
         /* lpOverlapped */ nullptr)) {
     return Status{Status::ReadFailure, formatWindowsError(GetLastError())};
