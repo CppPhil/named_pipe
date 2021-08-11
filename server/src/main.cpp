@@ -43,6 +43,9 @@ int main()
             << np::utf8ToUtf16(ex.what()) << NP_TEXT("\n");
 
     return EXIT_FAILURE;
+#else
+    NP_CERR << NP_TEXT("Server caught runtime_error: ") << ex.what()
+            << NP_TEXT("\n");
 #endif
   }
 

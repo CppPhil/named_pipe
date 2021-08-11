@@ -31,6 +31,8 @@ private:
   Mode   m_mode;
 #ifdef _WIN32
   HANDLE m_pipe;
+#else
+  int m_pipe;
 #endif
 };
 } // namespace np
