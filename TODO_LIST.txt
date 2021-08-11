@@ -2,4 +2,3 @@ Make it run on GNU/Linux
 
 Add Visual Studio Project files
 
-Add GNU Makefile

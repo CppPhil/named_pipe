@@ -164,14 +164,18 @@ NamedPipe::~NamedPipe()
 
     if (statusCode == -1) {
       NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
-      unlink(m_name.c_str());
+
+      if (m_mode == Mode::Create) {
+      	unlink(m_name.c_str());
+      }
       return;
     }
 
-    statusCode = unlink(m_name.c_str());
+    if (m_mode == Mode::Create) {    statusCode = unlink(m_name.c_str());
 
     if (statusCode == -1) {
       NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
+    }
     }
   }
 #endif
