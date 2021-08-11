@@ -5,6 +5,13 @@
 #include "format_windows_error.hpp"
 #include "named_pipe.hpp"
 
+#ifndef _WIN32
+#include <sys/types.h>
+#inculde <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif // ! _WIN32
+
 namespace np {
 namespace {
 #ifdef _WIN32
