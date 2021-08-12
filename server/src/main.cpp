@@ -44,7 +44,8 @@ int main()
 
     return EXIT_FAILURE;
 #else
-    NP_CERR << NP_TEXT("Server caught runtime_error: ") << ex.what()
+    NP_CERR << NP_TEXT("Server caught runtime_error: ")
+            << ex.what()
             << NP_TEXT("\n");
 
     return EXIT_FAILURE;

@@ -145,6 +145,7 @@ NamedPipe::NamedPipe(String name, Mode mode)
     m_pipe = openNamedPipe(m_name);
     break;
   }
+  }
 #endif
 }
 
