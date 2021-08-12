@@ -158,26 +158,26 @@ NamedPipe::~NamedPipe()
     }
   }
 #else
-    if (m_pipe != -1) {
-      int statusCode{close(m_pipe)};
+  if (m_pipe != -1) {
+    int statusCode{close(m_pipe)};
 
-      if (statusCode == -1) {
-        NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
-
-        if (m_mode == Mode::Create) {
-          unlink(m_name.c_str());
-        }
-        return;
-      }
+    if (statusCode == -1) {
+      NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
 
       if (m_mode == Mode::Create) {
-        statusCode = unlink(m_name.c_str());
+        unlink(m_name.c_str());
+      }
+      return;
+    }
 
-        if (statusCode == -1) {
-          NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
-        }
+    if (m_mode == Mode::Create) {
+      statusCode = unlink(m_name.c_str());
+
+      if (statusCode == -1) {
+        NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
       }
     }
+  }
 #endif
 }
 
@@ -214,13 +214,13 @@ Status NamedPipe::write(const void* data, std::size_t byteCount)
 
   return Status::ok();
 #else
-    const ssize_t bytesWritten{::write(m_pipe, data, byteCount)};
+  const ssize_t bytesWritten{::write(m_pipe, data, byteCount)};
 
-    if (bytesWritten != static_cast<ssize_t>(byteCount)) {
-      return Status{Status::WriteFailure, NP_TEXT("write failed!")};
-    }
+  if (bytesWritten != static_cast<ssize_t>(byteCount)) {
+    return Status{Status::WriteFailure, NP_TEXT("write failed!")};
+  }
 
-    return Status::ok();
+  return Status::ok();
 #endif
 }
 
@@ -247,13 +247,13 @@ Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
 
   return Status::ok();
 #else
-    const ssize_t bytesRead{::read(m_pipe, buffer, bytesToRead)};
+  const ssize_t bytesRead{::read(m_pipe, buffer, bytesToRead)};
 
-    if (bytesRead != static_cast<ssize_t>(bytesToRead)) {
-      return Status{Status::ReadFailure, NP_TEXT("read failed!")};
-    }
+  if (bytesRead != static_cast<ssize_t>(bytesToRead)) {
+    return Status{Status::ReadFailure, NP_TEXT("read failed!")};
+  }
 
-    return Status::ok();
+  return Status::ok();
 #endif
 }
 } // namespace np
