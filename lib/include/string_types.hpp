@@ -1,5 +1,4 @@
-#ifndef INCG_NP_STRING_TYPES_HPP
-#define INCG_NP_STRING_TYPES_HPP
+#pragma once
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -20,4 +19,3 @@ using Character = char;
 using String     = std::basic_string<Character>;
 using StringView = std::basic_string_view<Character>;
 } // namespace np
-#endif // INCG_NP_STRING_TYPES_HPP

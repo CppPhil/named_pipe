@@ -32,12 +32,10 @@ namespace {
     /* lpDefaultChar */ nullptr,
     /* lpUsedDefaultChar */ nullptr);
 }
-} // namespace
+} // anonymous namespace
 
 std::wstring utf8ToUtf16(std::string_view utf8)
 {
-  static_assert(sizeof(char) == 1, "char isn't 1 byte wide");
-
   const std::size_t charsNeeded{utf8ToUtf16RequiredChars(utf8)};
   std::wstring      buffer(charsNeeded, L' ');
 
@@ -54,16 +52,13 @@ std::wstring utf8ToUtf16(std::string_view utf8)
       "Could not convert \"" + std::string{utf8} + "\" to UTF-16."};
   }
 
-  buffer.pop_back(); // Remove extraneous L'\0' character written by
-                     // MultiByteToWideChar, std::wstring is already
-                     // null-terminated.
+  buffer.pop_back();
+
   return buffer;
 }
 
 std::string utf16ToUtf8(std::wstring_view utf16)
 {
-  static_assert(sizeof(wchar_t) == 2, "wchar_t isn't 2 bytes wide");
-
   const std::size_t bytesNeeded{utf16ToUtf8RequiredBytes(utf16)};
   std::string       buffer(bytesNeeded, ' ');
 
@@ -81,10 +76,9 @@ std::string utf16ToUtf8(std::wstring_view utf16)
     throw std::runtime_error{"Could not convert UTF-16 data to UTF-8."};
   }
 
-  buffer
-    .pop_back(); // Remove extraneous 0x00 byte written by WideCharToMultiByte,
-                 // std::string is already null-terminated.
+  buffer.pop_back();
+
   return buffer;
 }
-#endif // _WIN32
+#endif
 } // namespace np

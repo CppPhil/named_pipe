@@ -1,5 +1,4 @@
-#ifndef INCG_NP_NAMED_PIPE_HPP
-#define INCG_NP_NAMED_PIPE_HPP
+#pragma once
 #include <stdexcept>
 
 #ifdef _WIN32
@@ -40,4 +39,3 @@ private:
 #endif
 };
 } // namespace np
-#endif // INCG_NP_NAMED_PIPE_HPP

@@ -1,5 +1,4 @@
-#ifndef INCG_NP_CODE_CONV_HPP
-#define INCG_NP_CODE_CONV_HPP
+#pragma once
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -9,6 +8,5 @@ namespace np {
 std::wstring utf8ToUtf16(std::string_view utf8);
 
 std::string utf16ToUtf8(std::wstring_view utf16);
-#endif // _WIN32
+#endif
 } // namespace np
-#endif // INCG_NP_CODE_CONV_HPP

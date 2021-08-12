@@ -1,9 +1,7 @@
-#include <utility>
-
+#include "named_pipe.hpp"
 #include "code_conv.hpp"
 #include "constants.hpp"
 #include "format_windows_error.hpp"
-#include "named_pipe.hpp"
 
 #ifndef _WIN32
 #include <fcntl.h>
@@ -57,7 +55,7 @@ void addPrefixToPipeName(String& name)
 
   if (statusCode == -1) {
     throw std::runtime_error{
-      "Could not create pipe named \"" + String{pipeName} + "\""};
+      "Could not create pipe name \"" + String{pipeName} + "\""};
   }
 
   const int fileDescriptor{open(pipeName.data(), O_RDONLY)};
@@ -109,7 +107,7 @@ NamedPipe::NamedPipe(String name, Mode mode)
     }
 
     if (!ConnectNamedPipe(m_pipe, nullptr)) {
-      CloseHandle(/* hObject */ m_pipe);
+      CloseHandle(m_pipe);
       throw std::runtime_error{
         "Server: ConnectNamedPipe failed: "
         + utf16ToUtf8(formatWindowsError(GetLastError()))};
@@ -147,7 +145,6 @@ NamedPipe::NamedPipe(String name, Mode mode)
     m_pipe = openNamedPipe(m_name);
     break;
   }
-  }
 #endif
 }
 
@@ -155,31 +152,31 @@ NamedPipe::~NamedPipe()
 {
 #ifdef _WIN32
   if (m_pipe != INVALID_HANDLE_VALUE) {
-    if (!CloseHandle(/* hObject */ m_pipe)) {
-      NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
+    if (!CloseHandle(m_pipe)) {
+      NP_CERR << NP_TEXT("Could not close pipe in destructor\n");
     }
   }
 #else
-  if (m_pipe != -1) {
-    int statusCode{close(m_pipe)};
-
-    if (statusCode == -1) {
-      NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
-
-      if (m_mode == Mode::Create) {
-        unlink(m_name.c_str());
-      }
-      return;
-    }
-
-    if (m_mode == Mode::Create) {
-      statusCode = unlink(m_name.c_str());
+    if (m_pipe != -1) {
+      int statusCode{close(m_pipe)};
 
       if (statusCode == -1) {
-        NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
+        NP_CERR << NP_TEXT("Could not close pipe in destructor!\n");
+
+        if (m_mode == Mode::Create) {
+          unlink(m_name.c_str());
+        }
+        return;
+      }
+
+      if (m_mode == Mode::Create) {
+        statusCode = unlink(m_name.c_str());
+
+        if (statusCode == -1) {
+          NP_CERR << NP_TEXT("Could not unlink pipe in destructor!\n");
+        }
       }
     }
-  }
 #endif
 }
 
@@ -216,13 +213,13 @@ Status NamedPipe::write(const void* data, std::size_t byteCount)
 
   return Status::ok();
 #else
-  const ssize_t bytesWritten{::write(m_pipe, data, byteCount)};
+    const ssize_t bytesWritten{::write(m_pipe, data, byteCount)};
 
-  if (bytesWritten != static_cast<ssize_t>(byteCount)) {
-    return Status{Status::WriteFailure, NP_TEXT("write failed!")};
-  }
+    if (bytesWritten != static_cast<ssize_t>(byteCount)) {
+      return Status{Status::WriteFailure, NP_TEXT("write failed!")};
+    }
 
-  return Status::ok();
+    return Status::ok();
 #endif
 }
 
@@ -249,13 +246,13 @@ Status NamedPipe::read(void* buffer, std::size_t bytesToRead)
 
   return Status::ok();
 #else
-  const ssize_t bytesRead{::read(m_pipe, buffer, bytesToRead)};
+    const ssize_t bytesRead{::read(m_pipe, buffer, bytesToRead)};
 
-  if (bytesRead != static_cast<ssize_t>(bytesToRead)) {
-    return Status{Status::ReadFailure, NP_TEXT("read failed!")};
-  }
+    if (bytesRead != static_cast<ssize_t>(bytesToRead)) {
+      return Status{Status::ReadFailure, NP_TEXT("read failed!")};
+    }
 
-  return Status::ok();
+    return Status::ok();
 #endif
 }
 } // namespace np

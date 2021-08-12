@@ -1,5 +1,4 @@
-#ifndef INCG_NP_STATUS_HPP
-#define INCG_NP_STATUS_HPP
+#pragma once
 #include "string_types.hpp"
 
 namespace np {
@@ -24,4 +23,3 @@ private:
   String     m_message;
 };
 } // namespace np
-#endif // INCG_NP_STATUS_HPP

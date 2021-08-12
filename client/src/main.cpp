@@ -52,8 +52,6 @@ int main()
 #else
     NP_CERR << NP_TEXT("Client caught runtime_error: ") << ex.what()
             << NP_TEXT("\n");
-
-    return EXIT_FAILURE;
 #endif
   }
 

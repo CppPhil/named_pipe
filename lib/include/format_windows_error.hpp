@@ -1,5 +1,4 @@
-#ifndef INCG_NP_FORMAT_WINDOWS_ERROR_HPP
-#define INCG_NP_FORMAT_WINDOWS_ERROR_HPP
+#pragma once
 #include <stdexcept>
 #include <string>
 
@@ -12,4 +11,3 @@ namespace np {
 std::wstring formatWindowsError(DWORD errorCode);
 #endif // _WIN32
 } // namespace np
-#endif // INCG_NP_FORMAT_WINDOWS_ERROR_HPP
