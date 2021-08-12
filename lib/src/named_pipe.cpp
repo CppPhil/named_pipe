@@ -109,6 +109,7 @@ NamedPipe::NamedPipe(String name, Mode mode)
     }
 
     if (!ConnectNamedPipe(m_pipe, nullptr)) {
+      CloseHandle(/* hObject */ m_pipe);
       throw std::runtime_error{
         "Server: ConnectNamedPipe failed: "
         + utf16ToUtf8(formatWindowsError(GetLastError()))};
@@ -120,7 +121,6 @@ NamedPipe::NamedPipe(String name, Mode mode)
     if (!WaitNamedPipeW(
           /* lpNamedPipeName */ m_name.c_str(),
           /* nTimeOut */ waitTimeMilliseconds)) {
-      CloseHandle(/* hObject */ m_pipe);
       throw std::runtime_error{
         "Client: (WaitNamedPipeW) waited too long for pipe "
         + utf16ToUtf8(m_name)};
